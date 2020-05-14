@@ -12,14 +12,14 @@ configurations {
 dependencies {
     // from https://code.google.com/archive/p/jarjar/downloads
     jarjar files('libs/jarjar-1.4.jar')
-
-    compileOnly "com.squareup:javapoet:${JAVAPOET_VERSION}"
-    compileOnly "com.google.auto.service:auto-service:${AUTO_SERVICE_VERSION}"
-    compileOnly "com.google.code.findbugs:jsr305:${JSR_305_VERSION}"
-    compile project(':annotation')
+    compile "com.squareup:javapoet:1.11.1"
+    compileOnly "com.google.auto.service:auto-service:1.0-rc6"
+    //compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+    compileOnly files('libs/jsr305-3.0.2.jar')
+    compile project(':GlideModule:annotation')
     // This is to support com.sun.tools.javac.util.List, currently used in RootModuleGenerator.
     compile files(Jvm.current().getToolsJar())
-    annotationProcessor "com.google.auto.service:auto-service:${AUTO_SERVICE_VERSION}"
+    annotationProcessor "com.google.auto.service:auto-service:1.0-rc6"
 }
 
 // Make sure running `gradlew :annotation:compiler:check` actually does full quality control.
@@ -74,20 +74,21 @@ task proguard(type: ProGuardTask, dependsOn: tasks.jarjar) {
     outjars proguardedJar
 
     libraryjars files(configurations.compile.collect())
-    libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    //libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    libraryjars "C:\\jdk1.8.0_172\\jre\\lib\\rt.jar"
 }
 
 // Replace the contents of the standard jar task with those from our our compiled, repackaged and
 // proguarded jar. Replacing the task itself is possible and looks simpler, but requires
 // reconstructing the task dependency chain and is more complex in practice.
-jar {
-    dependsOn proguard
-    from zipTree(proguardedJar)
-    exclude { entry ->
-        sourceSets.main.output.files*.absolutePath.any {
-            entry.file.absolutePath.startsWith it
-        }
-    }
-}
+//jar {
+//    dependsOn proguard
+//    from zipTree(proguardedJar)
+//    exclude { entry ->
+//        sourceSets.main.output.files*.absolutePath.any {
+//            entry.file.absolutePath.startsWith it
+//        }
+//    }
+//}
 
-apply from: "${rootProject.projectDir}/scripts/upload.gradle"
+//apply from: "${rootProject.projectDir}/scripts/upload.gradle"

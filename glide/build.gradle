@@ -1,64 +1,62 @@
 apply plugin: 'com.android.library'
 
-if (!hasProperty('DISABLE_ERROR_PRONE')) {
-    apply plugin: "net.ltgt.errorprone"
-}
+
 
 tasks.withType(JavaCompile) {
     options.fork = true
 }
 
 dependencies {
-    api project(':third_party:gif_decoder')
-    api project(':third_party:disklrucache')
-    api project(':annotation')
-    api "androidx.fragment:fragment:${ANDROID_X_VERSION}"
-    api "androidx.vectordrawable:vectordrawable-animated:${ANDROID_X_VERSION}"
-    compileOnly "androidx.appcompat:appcompat:${ANDROID_X_VERSION}"
+    api project(':GlideModule:gif_decoder')
+    api project(':GlideModule:disklrucache')
+    api project(':GlideModule:annotation')
+    api (libs_fragment)
+    api (libs_vectordrawable)
 
-    if (project.plugins.hasPlugin('net.ltgt.errorprone')) {
-        errorprone "com.google.errorprone:error_prone_core:${ERROR_PRONE_VERSION}"
+    if(use_compat_official=='1'){
+        api (libs_compat)
+    }else{
+        implementation  project(':AxtAppCompat')
+        implementation (libs_appres)
+        configurations {
+            //all*.exclude group: 'androidx.appcompat'
+        }
     }
 
-    testImplementation "androidx.appcompat:appcompat:${ANDROID_X_VERSION}"
-    testImplementation project(':testutil')
-    testImplementation 'com.google.guava:guava-testlib:18.0'
-    testImplementation "com.google.truth:truth:${TRUTH_VERSION}"
-    testImplementation "junit:junit:${JUNIT_VERSION}"
-    testImplementation "org.mockito:mockito-core:${MOCKITO_VERSION}"
-    testImplementation "org.robolectric:robolectric:${ROBOLECTRIC_VERSION}"
-    testImplementation "com.squareup.okhttp3:mockwebserver:${MOCKWEBSERVER_VERSION}"
-    testImplementation "androidx.legacy:legacy-support-v4:${ANDROID_X_VERSION}"
+
+    //testImplementation "androidx.appcompat:appcompat:auto"
+    //testImplementation "junit:junit:${JUNIT_VERSION}"
+    //testImplementation "org.mockito:mockito-core:${MOCKITO_VERSION}"
+    //testImplementation "org.robolectric:robolectric:${ROBOLECTRIC_VERSION}"
+    //testImplementation "com.squareup.okhttp3:mockwebserver:${MOCKWEBSERVER_VERSION}"
+    //testImplementation (libs_v4)
 }
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION as int
+    compileSdkVersion ver_compileSdkVersion as int
 
     defaultConfig {
-        minSdkVersion MIN_SDK_VERSION as int
-        targetSdkVersion TARGET_SDK_VERSION as int
-        versionName VERSION_NAME as String
+        minSdkVersion ver_minsdk
+        targetSdkVersion ver_aimsdk
+        versionName "fff"
         consumerProguardFiles 'proguard-rules.txt'
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
+
 }
 
-check.dependsOn(':library:findbugs:findbugs')
-check.dependsOn(':library:pmd:pmd')
-check.dependsOn(':library:test:check')
+//check.dependsOn(':library:findbugs:findbugs')
+//check.dependsOn(':library:pmd:pmd')
+//check.dependsOn(':library:test:check')
 
 // Used in pmd and findbugs subprojects.
-@SuppressWarnings("GroovyUnusedDeclaration")
-def classPathForQuality() {
-    return files(
-            android.bootClasspath,
-            project.configurations.compile,
-            project.android.libraryVariants.collect { it.javaCompile.classpath }
-    )
-}
+//@SuppressWarnings("GroovyUnusedDeclaration")
+//def classPathForQuality() {
+//    return files(
+//            android.bootClasspath,
+//            project.configurations.compile,
+//            project.android.libraryVariants.collect { it.javaCompile.classpath }
+//    )
+//}
 
-apply from: "${rootProject.projectDir}/scripts/upload.gradle"
+//apply from: "${rootProject.projectDir}/scripts/upload.gradle"

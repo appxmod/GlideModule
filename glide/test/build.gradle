@@ -1,7 +1,15 @@
 apply plugin: 'com.android.library'
 
 dependencies {
-    testImplementation "androidx.appcompat:appcompat:${ANDROID_X_VERSION}"
+    if(use_compat_official=='1'){
+        testImplementation (libs_compat)
+    }else{
+        testImplementation  project(':AxtAppCompat')
+        testImplementation (libs_appres)
+        configurations {
+            //all*.exclude group: 'androidx.appcompat'
+        }
+    }
     testImplementation project(':library')
     testImplementation project(':testutil')
     testImplementation 'com.google.guava:guava-testlib:18.0'
@@ -10,7 +18,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${MOCKITO_VERSION}"
     testImplementation "org.robolectric:robolectric:${ROBOLECTRIC_VERSION}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${MOCKWEBSERVER_VERSION}"
-    testImplementation "androidx.legacy:legacy-support-v4:${ANDROID_X_VERSION}"
+    testImplementation (libs_v4)
     testImplementation "androidx.test:core:${ANDROID_X_VERSION}"
 }
 
@@ -45,10 +53,7 @@ android {
         versionName VERSION_NAME as String
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
+
 
     testOptions.unitTests.includeAndroidResources = true
 
