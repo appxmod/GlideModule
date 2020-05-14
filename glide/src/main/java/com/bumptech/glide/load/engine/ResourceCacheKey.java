@@ -1,20 +1,22 @@
 package com.bumptech.glide.load.engine;
 
+import android.net.Uri;
 import androidx.annotation.NonNull;
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool;
+import com.bumptech.glide.signature.ObjectKey;
 import com.bumptech.glide.util.LruCache;
 import com.bumptech.glide.util.Util;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 
 /** A cache key for downsampled and transformed resource data + any requested signature. */
-final class ResourceCacheKey implements Key {
+public final class ResourceCacheKey implements Key {
   private static final LruCache<Class<?>, byte[]> RESOURCE_CLASS_BYTES = new LruCache<>(50);
   private final ArrayPool arrayPool;
-  private final Key sourceKey;
+  public final Key sourceKey;
   private final Key signature;
   private final int width;
   private final int height;
@@ -22,7 +24,7 @@ final class ResourceCacheKey implements Key {
   private final Options options;
   private final Transformation<?> transformation;
 
-  ResourceCacheKey(
+  public ResourceCacheKey(
       ArrayPool arrayPool,
       Key sourceKey,
       Key signature,
@@ -32,6 +34,21 @@ final class ResourceCacheKey implements Key {
       Class<?> decodedResourceClass,
       Options options) {
     this.arrayPool = arrayPool;
+    if(sourceKey instanceof ObjectKey){
+        if(((ObjectKey) sourceKey).getObject() instanceof Uri){
+            Uri uri = (Uri) ((ObjectKey) sourceKey).getObject();
+            if("file".equals(uri.getScheme())){
+                String path = uri.getPath();
+                if(path!=null && path.charAt(0)=='/'){
+                    int suffix_idx=path.lastIndexOf(".");
+                    int filename_idx=path.lastIndexOf("/");
+                    if(suffix_idx==-1)suffix_idx=path.length();
+                    path=path.substring(filename_idx+1, suffix_idx);
+                    sourceKey=new ObjectKey(Uri.fromParts("file", path, null));
+                }
+            }
+        }
+    }
     this.sourceKey = sourceKey;
     this.signature = signature;
     this.width = width;

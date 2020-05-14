@@ -56,8 +56,11 @@ class ResourceCacheGenerator implements DataFetcherGenerator, DataFetcher.DataCa
               + " to "
               + helper.getTranscodeClass());
     }
+    //Log.e("fatal resourceClasses",resourceClasses.toString());
+    //Log.e("fatal sourceIds",sourceIds.toString());
     while (modelLoaders == null || !hasNextModelLoader()) {
       resourceClassIndex++;
+        //Log.e("fatal resourceClassIndex", ""+resourceClassIndex);
       if (resourceClassIndex >= resourceClasses.size()) {
         sourceIdIndex++;
         if (sourceIdIndex >= sourceIds.size()) {

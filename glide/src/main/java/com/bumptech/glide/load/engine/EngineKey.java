@@ -30,6 +30,7 @@ class EngineKey implements Key {
       Class<?> transcodeClass,
       Options options) {
     this.model = Preconditions.checkNotNull(model);
+    //Log.e("fatal posision", "model:enginekey"+model);
     this.signature = Preconditions.checkNotNull(signature, "Signature must not be null");
     this.width = width;
     this.height = height;

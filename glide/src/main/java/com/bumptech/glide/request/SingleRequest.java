@@ -418,6 +418,7 @@ public final class SingleRequest<R>
     if (IS_VERBOSE_LOGGABLE) {
       logV("Got onSizeReady in " + LogTime.getElapsedMillis(startTime));
     }
+    //Log.e("fatal poison onSizeRead",width+" x "+height);
     if (status != Status.WAITING_FOR_SIZE) {
       return;
     }
@@ -576,7 +577,7 @@ public final class SingleRequest<R>
               + height
               + "] in "
               + LogTime.getElapsedMillis(startTime)
-              + " ms");
+              + " ms "+glideContext.getLogLevel());
     }
 
     isCallingCallbacks = true;

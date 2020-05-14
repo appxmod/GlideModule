@@ -50,7 +50,7 @@ public final class GlideBuilder {
   private DiskCache.Factory diskCacheFactory;
   private MemorySizeCalculator memorySizeCalculator;
   private ConnectivityMonitorFactory connectivityMonitorFactory;
-  private int logLevel = Log.INFO;
+  private int logLevel = Log.ERROR;
   private RequestOptionsFactory defaultRequestOptionsFactory =
       new RequestOptionsFactory() {
         @NonNull

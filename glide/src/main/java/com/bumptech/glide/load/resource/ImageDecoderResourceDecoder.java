@@ -91,6 +91,7 @@ public abstract class ImageDecoderResourceDecoder<T> implements ResourceDecoder<
                 });
 
             Size size = info.getSize();
+            //Log.e("fatal onHeaderDecoded",source.toString()+""+size.getWidth()+" x "+size.getHeight());
             int targetWidth = requestedWidth;
             if (requestedWidth == Target.SIZE_ORIGINAL) {
               targetWidth = size.getWidth();

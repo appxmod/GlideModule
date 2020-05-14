@@ -172,11 +172,24 @@ public class Engine
       boolean onlyRetrieveFromCache,
       ResourceCallback cb,
       Executor callbackExecutor) {
+      //Log.e("fatal","resourceClass "+resourceClass);
     long startTime = VERBOSE_IS_LOGGABLE ? LogTime.getLogTime() : 0;
+
+    Object ModifiedModel = model;
+    if(model instanceof String){
+        String path = (String)model;
+        if(path.charAt(0)=='/'){
+            int suffix_idx=path.lastIndexOf(".");
+            int filename_idx=path.lastIndexOf("/");
+            if(suffix_idx==-1)suffix_idx=path.length();
+            ModifiedModel=path.substring(filename_idx+1, suffix_idx);
+        }
+        //Log.e("fatal",ModifiedModel+" : "+model);
+    }
 
     EngineKey key =
         keyFactory.buildKey(
-            model,
+            ModifiedModel,
             signature,
             width,
             height,
@@ -184,6 +197,8 @@ public class Engine
             resourceClass,
             transcodeClass,
             options);
+
+    //Log.e("fatal",ModifiedModel+" : "+key.hashCode()+" : "+key.hashCodes());
 
     EngineResource<?> memoryResource;
     synchronized (this) {
