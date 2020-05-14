@@ -83,9 +83,12 @@ public class DiskLruCacheWrapper implements DiskCache {
   @Override
   public File get(Key key) {
     String safeKey = safeKeyGenerator.getSafeKey(key);
-    if (Log.isLoggable(TAG, Log.VERBOSE)) {
-      Log.v(TAG, "Get: Obtained: " + safeKey + " for for Key: " + key);
-    }
+    //if (Log.isLoggable(TAG, Log.VERBOSE)) {
+      //Log.i("fatal", "Get: Obtained: " + safeKey + " for for Key: " + key.hashCode()+" "+key.getClass());
+      //Log.i("fatal", "Get: Obtained: " + safeKey);
+    //}
+
+      //Log.e("fatal", "Get: Obtainig " + safeKey+" "+key);
     File result = null;
     try {
       // It is possible that the there will be a put in between these two gets. If so that shouldn't
@@ -145,7 +148,7 @@ public class DiskLruCacheWrapper implements DiskCache {
   }
 
   @Override
-  public void delete(Key key) {
+  public void deleteCacheByKey(Key key) {
     String safeKey = safeKeyGenerator.getSafeKey(key);
     try {
       getDiskCache().remove(safeKey);

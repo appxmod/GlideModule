@@ -17,7 +17,7 @@ public class DiskCacheAdapter implements DiskCache {
   }
 
   @Override
-  public void delete(Key key) {
+  public void deleteCacheByKey(Key key) {
     // no op, default for overriders
   }
 

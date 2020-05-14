@@ -59,7 +59,7 @@ public interface DiskCache {
    */
   // Public API.
   @SuppressWarnings("unused")
-  void delete(Key key);
+  void deleteCacheByKey(Key key);
 
   /** Clear the cache. */
   void clear();

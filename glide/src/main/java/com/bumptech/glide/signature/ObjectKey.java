@@ -21,6 +21,10 @@ public final class ObjectKey implements Key {
     this.object = Preconditions.checkNotNull(object);
   }
 
+  public Object getObject() {
+    return object;
+  }
+
   @Override
   public String toString() {
     return "ObjectKey{" + "object=" + object + '}';
