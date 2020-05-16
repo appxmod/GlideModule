@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseArray;
+
 import androidx.annotation.Nullable;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.ImageHeaderParser;
@@ -97,7 +99,7 @@ public final class Downsampler {
   private static final String ICO_MIME_TYPE = "image/x-ico";
   private static final Set<String> NO_DOWNSAMPLE_PRE_N_MIME_TYPES =
       Collections.unmodifiableSet(new HashSet<>(Arrays.asList(WBMP_MIME_TYPE, ICO_MIME_TYPE)));
-  private static final DecodeCallbacks EMPTY_CALLBACKS =
+  public static final DecodeCallbacks EMPTY_CALLBACKS =
       new DecodeCallbacks() {
         @Override
         public void onObtainBounds() {
@@ -125,16 +127,19 @@ public final class Downsampler {
   private final ArrayPool byteArrayPool;
   private final List<ImageHeaderParser> parsers;
   private final HardwareConfigState hardwareConfigState = HardwareConfigState.getInstance();
+	
+  private final SparseArray<int[]> bitmapDimensions;
 
   public Downsampler(
       List<ImageHeaderParser> parsers,
       DisplayMetrics displayMetrics,
       BitmapPool bitmapPool,
-      ArrayPool byteArrayPool) {
+      ArrayPool byteArrayPool, SparseArray<int[]> bitmapDimensions) {
     this.parsers = parsers;
     this.displayMetrics = Preconditions.checkNotNull(displayMetrics);
     this.bitmapPool = Preconditions.checkNotNull(bitmapPool);
     this.byteArrayPool = Preconditions.checkNotNull(byteArrayPool);
+    this.bitmapDimensions = bitmapDimensions;
   }
 
   public boolean handles(@SuppressWarnings("unused") InputStream is) {
@@ -154,6 +159,7 @@ public final class Downsampler {
    *
    * @see #decode(InputStream, int, int, Options, DecodeCallbacks)
    */
+  @Deprecated
   public Resource<Bitmap> decode(InputStream is, int outWidth, int outHeight, Options options)
       throws IOException {
     return decode(is, outWidth, outHeight, options, EMPTY_CALLBACKS);
@@ -240,8 +246,11 @@ public final class Downsampler {
     int sourceWidth = sourceDimensions[0];
     int sourceHeight = sourceDimensions[1];
     String sourceMimeType = options.outMimeType;
-
-    // If we failed to obtain the image dimensions, we may end up with an incorrectly sized Bitmap,
+	
+    Log.v("Downsampler1", requestedWidth+" :: "+requestedHeight+"::"+options);
+    Log.v("Downsampler", sourceWidth+" :: "+sourceHeight);
+	
+	  // If we failed to obtain the image dimensions, we may end up with an incorrectly sized Bitmap,
     // so we want to use a mutable Bitmap type. One way this can happen is if the image header is so
     // large (10mb+) that our attempt to use inJustDecodeBounds fails and we're forced to decode the
     // full size image.
@@ -253,8 +262,41 @@ public final class Downsampler {
     int degreesToRotate = TransformationUtils.getExifOrientationDegrees(orientation);
     boolean isExifOrientationRequired = TransformationUtils.isExifOrientationRequired(orientation);
 
+	boolean b1=requestedWidth == Target.SIZE_ORIGINAL, b2=requestedHeight == Target.SIZE_ORIGINAL;
+    
+    boolean addToShame=false;
+    if(b2 && b1){
+    	int dm = 2048;
+    	int dmsq = dm*dm;
+		if(sourceWidth*sourceHeight>dmsq){
+			//Log.v("Downsampler", sourceWidth*sourceHeight+"Image too big"+dmsq);
+			if(false)
+				throw new IllegalArgumentException("Image too big");
+			b1=b2=false;
+			requestedWidth = dm;
+			if(requestedWidth>sourceWidth) requestedWidth=sourceWidth;
+			float ratio = sourceHeight*1.f/sourceWidth;
+			requestedHeight = (int) (requestedWidth*ratio);
+			if(requestedWidth*requestedHeight>dmsq){
+				requestedHeight = dm;
+				if(requestedHeight>sourceHeight) requestedHeight=sourceHeight;
+				requestedWidth = (int) (requestedHeight/ratio);
+			}
+			addToShame=true;
+		}
+//    	if(){
+//
+//		} else { // for thumbnails i.e. 360 * Target.SIZE_ORIGINAL
+//    		if(requestedWidth>sourceWidth) requestedWidth=sourceWidth;
+//    		//if image is too high
+//			//requestedHeight =
+//		}
+	}
+    
     int targetWidth = requestedWidth == Target.SIZE_ORIGINAL ? sourceWidth : requestedWidth;
     int targetHeight = requestedHeight == Target.SIZE_ORIGINAL ? sourceHeight : requestedHeight;
+    
+    Log.v("Downsampler3", targetWidth+" :: "+targetHeight+" :: "+bitmapDimensions);
 
     ImageType imageType = ImageHeaderParserUtils.getType(parsers, is, byteArrayPool);
 
@@ -353,6 +395,8 @@ public final class Downsampler {
       if (!downsampled.equals(rotated)) {
         bitmapPool.put(downsampled);
       }
+      int hash = System.identityHashCode(downsampled);
+      bitmapDimensions.put(hash, new int[]{sourceWidth, sourceHeight});
     }
 
     return rotated;

@@ -5,7 +5,9 @@ dependencies {
         testImplementation (libs_compat)
     }else{
         testImplementation  project(':AxtAppCompat')
-        testImplementation (libs_appres)
+        testImplementation (libs_appres){
+            exclude module:"core"
+        }
         configurations {
             //all*.exclude group: 'androidx.appcompat'
         }
@@ -18,7 +20,9 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${MOCKITO_VERSION}"
     testImplementation "org.robolectric:robolectric:${ROBOLECTRIC_VERSION}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${MOCKWEBSERVER_VERSION}"
-    testImplementation (libs_v4)
+    testImplementation (libs_v4){
+        exclude module:"core"
+    }
     testImplementation "androidx.test:core:${ANDROID_X_VERSION}"
 }
 

@@ -28,6 +28,6 @@ public class ByteBufferBitmapDecoder implements ResourceDecoder<ByteBuffer, Bitm
       @NonNull ByteBuffer source, int width, int height, @NonNull Options options)
       throws IOException {
     InputStream is = ByteBufferUtil.toStream(source);
-    return downsampler.decode(is, width, height, options);
+    return downsampler.decode(is, width, height, options, Downsampler.EMPTY_CALLBACKS);
   }
 }

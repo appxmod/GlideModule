@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.MessageQueue.IdleHandler;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
@@ -345,6 +346,8 @@ public class Glide implements ComponentCallbacks2 {
         e);
   }
 
+  public static SparseArray<int[]> bitmapDimensions;
+  
   @SuppressWarnings("PMD.UnusedFormalParameter")
   Glide(
       @NonNull Context context,
@@ -392,12 +395,13 @@ public class Glide implements ComponentCallbacks2 {
       streamBitmapDecoder = new InputStreamBitmapImageDecoderResourceDecoder();
       byteBufferBitmapDecoder = new ByteBufferBitmapImageDecoderResourceDecoder();
     } else {
+      bitmapDimensions = new SparseArray<>();
       Downsampler downsampler =
           new Downsampler(
               registry.getImageHeaderParsers(),
               resources.getDisplayMetrics(),
               bitmapPool,
-              arrayPool);
+              arrayPool, bitmapDimensions);
       byteBufferBitmapDecoder = new ByteBufferBitmapDecoder(downsampler);
       streamBitmapDecoder = new StreamBitmapDecoder(downsampler, arrayPool);
     }

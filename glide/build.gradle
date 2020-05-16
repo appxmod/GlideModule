@@ -10,14 +10,22 @@ dependencies {
     api project(':GlideModule:gif_decoder')
     api project(':GlideModule:disklrucache')
     api project(':GlideModule:annotation')
-    api (libs_fragment)
-    api (libs_vectordrawable)
+    api project(':viewpager')
+    api (libs_fragment){
+        exclude module:"core"
+        exclude module: "viewpager"
+    }
+    api (libs_vectordrawable){
+        exclude module:"core"
+    }
 
     if(use_compat_official=='1'){
         api (libs_compat)
     }else{
         implementation  project(':AxtAppCompat')
-        implementation (libs_appres)
+        implementation (libs_appres){
+            exclude module:"core"
+        }
         configurations {
             //all*.exclude group: 'androidx.appcompat'
         }
