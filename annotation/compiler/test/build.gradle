@@ -57,7 +57,7 @@ dependencies {
     testImplementation project(':annotation:compiler')
     testImplementation "junit:junit:${JUNIT_VERSION}"
     testImplementation "com.squareup:javapoet:${JAVAPOET_VERSION}"
-    testImplementation "com.google.code.findbugs:jsr305:${JSR_305_VERSION}"
+    //testImplementation "com.google.code.findbugs:jsr305:${JSR_305_VERSION}"
     // Using 0.10 of compile-testing is required for Android Studio to function, but not for the
     // gradle build. Not yet clear why, but it looks like some kind of version conflict between
     // javapoet, guava and/or truth.

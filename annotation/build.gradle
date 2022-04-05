@@ -1,3 +1,17 @@
 apply plugin: 'java'
 
 //apply from: "${rootProject.projectDir}/scripts/upload.gradle"
+
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            //artifact "build\\libs\\annotation.jar"
+            from components.java
+            groupId "org.appxmod.glide"
+            artifactId "Annotation"
+            version "1.0.0"
+        }
+    }
+}
+build.finalizedBy publishToMavenLocal

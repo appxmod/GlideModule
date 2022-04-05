@@ -1,0 +1,7 @@
+
+include ':glide'
+include ':gif_decoder'
+include ':gif_encoder'
+include ':annotation'
+include ':annotation:compiler'
+include ':disklrucache'

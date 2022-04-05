@@ -7,29 +7,14 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    api project(':GlideModule:gif_decoder')
-    api project(':GlideModule:disklrucache')
-    api project(':GlideModule:annotation')
-    api project(':viewpager')
-    api (libs_fragment){
-        exclude module:"core"
-        exclude module: "viewpager"
-    }
-    api (libs_vectordrawable){
-        exclude module:"core"
-    }
-
-    if(use_compat_official=='1'){
-        api (libs_compat)
-    }else{
-        implementation  project(':AxtAppCompat')
-        implementation (libs_appres){
-            exclude module:"core"
-        }
-        configurations {
-            //all*.exclude group: 'androidx.appcompat'
-        }
-    }
+    api project(':gif_decoder')
+    api project(':disklrucache')
+    api project(':annotation')
+    api project(':annotation:compiler')
+    api (libs_viewpager)
+    api (libs_fragment)
+    api (libs_vectordrawable)
+    api (libs_compat)
 
 
     //testImplementation "androidx.appcompat:appcompat:auto"
@@ -41,7 +26,7 @@ dependencies {
 }
 
 android {
-    compileSdkVersion ver_compileSdkVersion as int
+    compileSdkVersion ver_compileSdkVersion
 
     defaultConfig {
         minSdkVersion ver_minsdk
@@ -68,3 +53,19 @@ android {
 //}
 
 //apply from: "${rootProject.projectDir}/scripts/upload.gradle"
+
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact "build\\outputs\\aar\\glide-debug.aar"
+            //from components.library
+            //println components.properties
+            //from components.wtf
+            groupId "org.appxmod.glide"
+            artifactId "GlideModule"
+            version "1.0.0"
+        }
+    }
+}
+build.finalizedBy publishToMavenLocal

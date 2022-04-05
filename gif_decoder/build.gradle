@@ -12,7 +12,7 @@ dependencies {
 }
 
 android {
-    compileSdkVersion ver_compileSdkVersion as int
+    compileSdkVersion ver_compileSdkVersion
 
     defaultConfig {
         minSdkVersion  ver_minsdk
@@ -21,3 +21,16 @@ android {
 }
 
 //apply from: "${rootProject.projectDir}/scripts/upload.gradle"
+
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact "build\\outputs\\aar\\gif_decoder-debug.aar"
+            groupId "org.appxmod.glide"
+            artifactId "GifDecoder"
+            version "1.0.0"
+        }
+    }
+}
+build.finalizedBy publishToMavenLocal

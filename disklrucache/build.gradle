@@ -12,7 +12,7 @@ dependencies {
 }
 
 android {
-    compileSdkVersion ver_compileSdkVersion as int
+    compileSdkVersion ver_compileSdkVersion
 
     defaultConfig {
         minSdkVersion ver_minsdk
@@ -28,3 +28,17 @@ android {
 //if (file(uploaderScript).exists()) {
 //	apply from: uploaderScript
 //}
+
+
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact "build\\outputs\\aar\\disklrucache-debug.aar"
+            groupId "org.appxmod.glide"
+            artifactId "DiskLruCache"
+            version "1.0.0"
+        }
+    }
+}
+build.finalizedBy publishToMavenLocal
