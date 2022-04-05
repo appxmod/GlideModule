@@ -19,8 +19,6 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
-import com.sun.tools.javac.code.Attribute;
-import com.sun.tools.javac.code.Type.ClassType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -535,7 +533,7 @@ final class ProcessorUtil {
       }
       excludedModuleAnnotationValue = values.iterator().next().getValue();
       if (excludedModuleAnnotationValue == null
-          || excludedModuleAnnotationValue instanceof Attribute.UnresolvedClass) {
+          /*|| excludedModuleAnnotationValue instanceof Attribute.UnresolvedClass*/) {
         throw new IllegalArgumentException(
             "Failed to find value for: "
                 + annotationClass
@@ -555,8 +553,8 @@ final class ProcessorUtil {
       }
       return result;
     } else {
-      ClassType classType = (ClassType) value;
-      return Collections.singleton(classType.toString());
+      //ClassType classType = (ClassType) value;
+      return Collections.singleton(value.toString());
     }
   }
 
