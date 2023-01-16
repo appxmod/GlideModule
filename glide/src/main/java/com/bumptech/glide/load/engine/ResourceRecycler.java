@@ -34,8 +34,12 @@ class ResourceRecycler {
     public boolean handleMessage(Message message) {
       if (message.what == RECYCLE_RESOURCE) {
         Resource<?> resource = (Resource<?>) message.obj;
-        resource.recycle();
-        return true;
+		  try {
+			  resource.recycle();
+		  } catch (Exception e) {
+			  e.printStackTrace();
+		  }
+		  return true;
       }
       return false;
     }
