@@ -1,17 +1,7 @@
 apply plugin: 'com.android.library'
 
 dependencies {
-    if(use_compat_official=='1'){
-        testImplementation (libs_compat)
-    }else{
-        testImplementation  project(':AxtAppCompat')
-        testImplementation (libs_appres){
-            exclude module:"core"
-        }
-        configurations {
-            //all*.exclude group: 'androidx.appcompat'
-        }
-    }
+    testImplementation (libs_compat)
     testImplementation project(':library')
     testImplementation project(':testutil')
     testImplementation 'com.google.guava:guava-testlib:18.0'
