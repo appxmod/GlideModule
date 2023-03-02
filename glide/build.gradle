@@ -17,7 +17,7 @@ dependencies {
     api project(':gif_decoder')
     api project(':disklrucache')
     api project(':annotation')
-    api project(':annotation:compiler')
+    compileOnly project(':annotation:compiler')
     api (libs_viewpager)
     api (libs_fragment)
     api (libs_vectordrawable)
