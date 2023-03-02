@@ -1,6 +1,8 @@
 package com.bumptech.glide.load.engine;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.CMN;
+
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.util.Preconditions;
 
@@ -64,12 +66,16 @@ class EngineResource<Z> implements Resource<Z> {
 
   @Override
   public synchronized void recycle() {
-    if (acquired > 0) {
-      throw new IllegalStateException("Cannot recycle a resource while it is still acquired");
-    }
-    if (isRecycled) {
-      throw new IllegalStateException("Cannot recycle a resource that has already been recycled");
-    }
+	  try {
+		  if (acquired > 0) {
+			  throw new IllegalStateException("Cannot recycle a resource while it is still acquired");
+		  }
+		  if (isRecycled) {
+			  throw new IllegalStateException("Cannot recycle a resource that has already been recycled");
+		  }
+	  } catch (Exception e) {
+		  CMN.Log(e);
+	  }
     isRecycled = true;
     if (isRecyclable) {
       resource.recycle();
